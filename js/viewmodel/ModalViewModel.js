@@ -5,9 +5,11 @@
     constructor(store) {
       this.store = store;
       this.section = "found";
+      this.saving = false;
       this.modal = document.getElementById("modal-add");
       this.form = document.getElementById("modal-form");
       this.imageInput = document.getElementById("field-image");
+      this.submitBtn = document.getElementById("modal-submit");
       this.onSaved = null;
 
       var vm = this;
@@ -32,8 +34,25 @@
       });
     }
 
+    setSaving(on) {
+      if (!this.submitBtn) return;
+      this.submitBtn.disabled = on;
+      if (on) {
+        this.submitBtn.classList.add("opacity-60", "cursor-not-allowed");
+        this.submitBtn.innerHTML =
+          '<span class="inline-flex items-center justify-center gap-2">' +
+          '<span class="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin"></span>' +
+          "جارِ الحفظ...</span>";
+      } else {
+        this.submitBtn.classList.remove("opacity-60", "cursor-not-allowed");
+        this.submitBtn.textContent = "حفظ";
+      }
+    }
+
     open(section) {
       this.section = section;
+      this.saving = false;
+      this.setSaving(false);
       var isLost = section === "lost";
       document.getElementById("modal-title").textContent = isLost ? "إضافة عنصر مفقود" : "إضافة عنصر موجود";
       document.getElementById("label-name").textContent = isLost ? "اسم المفقود" : "اسم الموجود";
@@ -48,6 +67,9 @@
     }
 
     save() {
+      if (this.saving) return;
+      this.saving = true;
+      this.setSaving(true);
       var vm = this;
       var now = new Date();
       var pad = function (n) {
@@ -85,9 +107,14 @@
       Utils.compressImage(this.imageInput.files[0], function (dataUrl) {
         base.image = dataUrl;
         vm.store.add(vm.section, base).then(function () {
+          vm.saving = false;
+          vm.setSaving(false);
           vm.close();
           if (typeof vm.onSaved === "function") vm.onSaved();
-        }).catch(function () {});
+        }).catch(function () {
+          vm.saving = false;
+          vm.setSaving(false);
+        });
       });
     }
   }
