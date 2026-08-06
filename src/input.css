@@ -90,8 +90,8 @@
 }
 .float-field > input:focus + label,
 .float-field > input:not(:placeholder-shown) + label {
-  top: 0.125rem;
-  transform: translateY(0);
+  top: 0;
+  transform: translateY(-50%);
   font-size: 0.6875rem;
   color: var(--float-focus);
   background: transparent;
