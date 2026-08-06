@@ -8,6 +8,18 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen">
 
+  <!-- ====== شريط الخطأ ====== -->
+  <div id="app-error"
+    class="hidden fixed top-4 inset-x-0 z-[60] mx-auto w-fit max-w-[90%] bg-red-500 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg text-center"></div>
+
+  <!-- ====== شاشة التحميل ====== -->
+  <div id="app-loading" class="fixed inset-0 z-[70] bg-slate-100 flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-10 h-10 border-4 border-slate-300 border-t-sky-500 rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-slate-500">جارِ تحميل البيانات...</p>
+    </div>
+  </div>
+
   <!-- ====== الشاشة الرئيسية ====== -->
   <section id="screen-main" class="screen min-h-screen">
     <div class="max-w-3xl mx-auto px-4 py-12">

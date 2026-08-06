@@ -27,6 +27,33 @@
       reader.readAsDataURL(file);
     },
 
+    compressImage: function (file, cb) {
+      if (!file) return cb("");
+      var reader = new FileReader();
+      reader.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          var MAX = 900;
+          var scale = Math.min(1, MAX / Math.max(img.width, img.height));
+          var w = Math.max(1, Math.round(img.width * scale));
+          var h = Math.max(1, Math.round(img.height * scale));
+          var canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+          cb(canvas.toDataURL("image/jpeg", 0.8));
+        };
+        img.onerror = function () {
+          cb("");
+        };
+        img.src = reader.result;
+      };
+      reader.onerror = function () {
+        cb("");
+      };
+      reader.readAsDataURL(file);
+    },
+
     waLink: function (contact, text) {
       var num = String(contact || "").replace(/[^0-9]/g, "");
       if (num.charAt(0) === "0" && num.length === 10) {

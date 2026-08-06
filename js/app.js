@@ -3,58 +3,74 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     var store = new Store();
+    var bootEl = document.getElementById("app-loading");
+    var errEl = document.getElementById("app-error");
 
-    var lostVM = new LostViewModel(store);
-    var foundVM = new FoundViewModel(store);
-    var modalVM = new ModalViewModel(store);
-    var detailVM = new DetailViewModel();
-
-    modalVM.onSaved = function () {
-      lostVM.render();
-      foundVM.render();
+    store.onError = function (msg) {
+      if (!errEl) return;
+      errEl.textContent = msg;
+      errEl.classList.remove("hidden");
+      clearTimeout(errEl._t);
+      errEl._t = setTimeout(function () {
+        errEl.classList.add("hidden");
+      }, 7000);
     };
 
-    detailVM.onDelete = function (item, section) {
-      store.remove(section, item.id);
-      lostVM.render();
-      foundVM.render();
-    };
+    store.init().then(function () {
+      var lostVM = new LostViewModel(store);
+      var foundVM = new FoundViewModel(store);
+      var modalVM = new ModalViewModel(store);
+      var detailVM = new DetailViewModel();
 
-    function refresh() {
-      lostVM.render();
-      foundVM.render();
-    }
+      modalVM.onSaved = function () {
+        lostVM.render();
+        foundVM.render();
+      };
 
-    function findItem(section, id) {
-      return store.getAll(section).find(function (i) {
-        return i.id === id;
-      });
-    }
+      detailVM.onDelete = function (item, section) {
+        store.remove(section, item.id).catch(function () {});
+        lostVM.render();
+        foundVM.render();
+      };
 
-    function wireList(listEl, section) {
-      listEl.addEventListener("click", function (e) {
-        var delBtn = e.target.closest("[data-delete]");
-        if (delBtn) {
-          e.stopPropagation();
-          var dId = Number(delBtn.getAttribute("data-id"));
-          var dItem = findItem(section, dId);
-          if (dItem && window.confirm("هل تريد حذف هذا العنصر؟")) {
-            store.remove(section, dId);
-            refresh();
+      function refresh() {
+        lostVM.render();
+        foundVM.render();
+      }
+
+      function findItem(section, id) {
+        return store.getAll(section).find(function (i) {
+          return i.id === id;
+        });
+      }
+
+      function wireList(listEl, section) {
+        listEl.addEventListener("click", function (e) {
+          var delBtn = e.target.closest("[data-delete]");
+          if (delBtn) {
+            e.stopPropagation();
+            var dId = Number(delBtn.getAttribute("data-id"));
+            var dItem = findItem(section, dId);
+            if (dItem && window.confirm("هل تريد حذف هذا العنصر؟")) {
+              store.remove(section, dId).catch(function () {});
+              refresh();
+            }
+            return;
           }
-          return;
-        }
 
-        var card = e.target.closest("[data-id]");
-        if (!card) return;
-        var item = findItem(section, Number(card.getAttribute("data-id")));
-        if (item) detailVM.open(item, section);
-      });
-    }
+          var card = e.target.closest("[data-id]");
+          if (!card) return;
+          var item = findItem(section, Number(card.getAttribute("data-id")));
+          if (item) detailVM.open(item, section);
+        });
+      }
 
-    wireList(document.getElementById("lost-list"), "lost");
-    wireList(document.getElementById("found-list"), "found");
+      wireList(document.getElementById("lost-list"), "lost");
+      wireList(document.getElementById("found-list"), "found");
 
-    new MainViewModel(store, lostVM, foundVM);
+      new MainViewModel(store, lostVM, foundVM);
+
+      if (bootEl) bootEl.classList.add("hidden");
+    });
   });
 })();

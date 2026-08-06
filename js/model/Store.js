@@ -168,32 +168,39 @@
     ],
   };
 
+  var API_URL = "/api/db";
+
   class Store {
     constructor() {
-      this.data = this.load();
+      this.data = null;
+      this.onError = null;
     }
 
-    load() {
+    _fail(e, message) {
+      if (typeof this.onError === "function") {
+        this.onError(message || "تعذر الاتصال بالخادم", e);
+      }
+    }
+
+    async init() {
       try {
-        var raw = localStorage.getItem(Store.KEY);
-        if (raw) {
-          var parsed = JSON.parse(raw);
-          if (parsed && Array.isArray(parsed.lost) && Array.isArray(parsed.found)) {
-            return parsed;
-          }
+        var res = await fetch(API_URL);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        var parsed = await res.json();
+        if (parsed && Array.isArray(parsed.lost) && Array.isArray(parsed.found)) {
+          this.data = parsed;
+        } else {
+          this.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
         }
       } catch (e) {
-        /* ignore */
+        this.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        this._fail(e, "تعذر تحميل البيانات من الخادم. اعرض البيانات المحلية مؤقتاً.");
       }
-      return JSON.parse(JSON.stringify(DEFAULT_DATA));
-    }
-
-    save() {
-      localStorage.setItem(Store.KEY, JSON.stringify(this.data));
+      return this.data;
     }
 
     getAll(section) {
-      return this.data[section] || [];
+      return (this.data && this.data[section]) || [];
     }
 
     getTypes(section) {
@@ -212,23 +219,59 @@
       return max + 1;
     }
 
-    add(section, item) {
-      item.id = this.nextId(section);
+    async add(section, item) {
       item.browserId = Utils.getBrowserId();
+      item.id = this.nextId(section);
       this.data[section].push(item);
-      this.save();
+
+      try {
+        var res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ section: section, item: item }),
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        var saved = await res.json();
+        item.id = saved.id;
+      } catch (e) {
+        this.data[section] = this.data[section].filter(function (x) {
+          return x !== item;
+        });
+        this._fail(e, "تعذر حفظ العنصر في الخادم. حاول مجدداً.");
+        throw e;
+      }
       return item;
     }
 
-    remove(section, id) {
-      this.data[section] = this.data[section].filter(function (item) {
-        return item.id !== id;
-      });
-      this.save();
+    async remove(section, id) {
+      var list = this.data[section];
+      var idx = -1;
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].id === id) {
+          idx = i;
+          break;
+        }
+      }
+      if (idx === -1) return;
+      var removed = list[idx];
+      list.splice(idx, 1);
+
+      try {
+        var res = await fetch(API_URL, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ section: section, id: id }),
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+      } catch (e) {
+        list.splice(idx, 0, removed);
+        this._fail(e, "تعذر حذف العنصر من الخادم. حاول مجدداً.");
+        throw e;
+      }
     }
   }
 
-  Store.KEY = "lostFoundDB_v2";
+  Store.API = API_URL;
   Store.DEFAULT = DEFAULT_DATA;
 
   window.Store = Store;

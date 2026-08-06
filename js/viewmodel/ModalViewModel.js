@@ -82,11 +82,12 @@
         base.foundPlace = "غير محدد";
       }
 
-      Utils.readImage(this.imageInput.files[0], function (dataUrl) {
+      Utils.compressImage(this.imageInput.files[0], function (dataUrl) {
         base.image = dataUrl;
-        vm.store.add(vm.section, base);
-        vm.close();
-        if (typeof vm.onSaved === "function") vm.onSaved();
+        vm.store.add(vm.section, base).then(function () {
+          vm.close();
+          if (typeof vm.onSaved === "function") vm.onSaved();
+        }).catch(function () {});
       });
     }
   }

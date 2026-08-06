@@ -3,7 +3,16 @@
   "version": "1.0.0",
   "description": "نظام المفقودات والموجودات - MVVM + Tailwind CSS",
   "scripts": {
-    "build": ".\\tailwindcss.exe -i ./src/input.css -o ./css/styles.css",
-    "watch": ".\\tailwindcss.exe -i ./src/input.css -o ./css/styles.css --watch"
+    "build": "tailwindcss -i ./src/input.css -o ./css/styles.css",
+    "watch": "tailwindcss -i ./src/input.css -o ./css/styles.css --watch",
+    "dev": "netlify dev",
+    "dev:functions": "netlify functions:serve"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^10.7.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "netlify-cli": "^27.1.0"
   }
 }
