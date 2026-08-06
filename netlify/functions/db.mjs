@@ -2,7 +2,7 @@ import { getStore } from "@netlify/blobs";
 import { SEED_DATA } from "./seed.mjs";
 
 const STORE_NAME = "lostfound";
-const DATA_KEY = "data";
+const DATA_KEY = "data_v2";
 
 const store = () => getStore(STORE_NAME, { consistency: "strong" });
 
@@ -13,13 +13,30 @@ function json(body, status = 200) {
   });
 }
 
-async function readData() {
-  let data = await store().get(DATA_KEY, { type: "json" });
+async function readDataWithMeta() {
+  const entry = await store().getWithMetadata(DATA_KEY, { type: "json" });
+  let data = entry ? entry.data : null;
   if (!data || !Array.isArray(data.lost) || !Array.isArray(data.found)) {
     data = JSON.parse(JSON.stringify(SEED_DATA));
-    await store().setJSON(DATA_KEY, data);
+    const written = await store().setJSON(DATA_KEY, data);
+    return { data: data, etag: written.etag };
   }
-  return data;
+  return { data: data, etag: entry.etag };
+}
+
+async function readData() {
+  return (await readDataWithMeta()).data;
+}
+
+async function mutate(fn) {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const { data, etag } = await readDataWithMeta();
+    const result = fn(data);
+    if (result === false) return;
+    const res = await store().setJSON(DATA_KEY, data, { onlyIfMatch: etag });
+    if (res && res.modified !== false) return;
+  }
+  throw new Error("تعارض في الكتابة المتزامنة، حاول مجدداً");
 }
 
 function nextId(section, data) {
@@ -42,7 +59,7 @@ export default async (req) => {
     try {
       body = await req.json();
     } catch (e) {
-      /* empty body allowed */
+      return json({ error: "جسم الطلب غير صالح" }, 400);
     }
 
     if (method === "POST") {
@@ -51,11 +68,13 @@ export default async (req) => {
       if ((section !== "lost" && section !== "found") || !item || typeof item !== "object") {
         return json({ error: "بيانات غير صالحة" }, 400);
       }
-      const data = await readData();
-      item.id = nextId(section, data);
-      data[section].push(item);
-      await store().setJSON(DATA_KEY, data);
-      return json(item);
+      let saved = null;
+      await mutate(function (data) {
+        item.id = nextId(section, data);
+        data[section].push(item);
+        saved = item;
+      });
+      return json(saved);
     }
 
     if (method === "DELETE") {
@@ -64,17 +83,17 @@ export default async (req) => {
       if ((section !== "lost" && section !== "found") || !Number.isFinite(id)) {
         return json({ error: "بيانات غير صالحة" }, 400);
       }
-      const data = await readData();
-      data[section] = data[section].filter(function (item) {
-        return Number(item.id) !== id;
+      await mutate(function (data) {
+        data[section] = data[section].filter(function (item) {
+          return Number(item.id) !== id;
+        });
       });
-      await store().setJSON(DATA_KEY, data);
       return json({ ok: true });
     }
 
     return json({ error: "طريقة غير مدعومة" }, 405);
   } catch (err) {
     console.error(err);
-    return json({ error: "خطأ داخلي في الخادم" }, 500);
+    return json({ error: "خطأ داخلي في الخادم: " + (err && err.message ? err.message : "غير معروف") }, 500);
   }
 };
