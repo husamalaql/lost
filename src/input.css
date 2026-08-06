@@ -54,31 +54,29 @@
 
 :root {
   color-scheme: light;
-  --float-idle: #94a3b8;
-  --float-focus: #0ea5e9;
-  --float-bg: #ffffff;
+  --float-idle: #0f172a;
+  --float-focus: #0f172a;
 }
 .dark {
   color-scheme: dark;
-  --float-idle: #64748b;
-  --float-focus: #38bdf8;
-  --float-bg: #1e293b;
+  --float-idle: #f8fafc;
+  --float-focus: #f8fafc;
 }
 
 .float-field {
   position: relative;
 }
 .float-field > input {
-  padding-top: 1.4rem;
-  padding-bottom: 0.45rem;
+  padding-top: 1.05rem;
+  padding-bottom: 0.3rem;
 }
 .float-field > label {
   position: absolute;
   top: 50%;
   inset-inline-start: 0.75rem;
   transform: translateY(-50%);
-  padding: 0 0.25rem;
-  font-size: 0.875rem;
+  padding: 0 0.15rem;
+  font-size: 0.8125rem;
   line-height: 1.25rem;
   color: var(--float-idle);
   background: transparent;
@@ -92,9 +90,9 @@
 }
 .float-field > input:focus + label,
 .float-field > input:not(:placeholder-shown) + label {
-  top: 0;
-  transform: translateY(-50%);
-  font-size: 0.75rem;
+  top: 0.125rem;
+  transform: translateY(0);
+  font-size: 0.6875rem;
   color: var(--float-focus);
-  background: var(--float-bg);
+  background: transparent;
 }

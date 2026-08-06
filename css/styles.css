@@ -472,10 +472,10 @@
     margin-block-start: calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse));
     margin-block-end: calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse)));
   }
-  :where(.space-y-4 > :not(:last-child)) {
+  :where(.space-y-3 > :not(:last-child)) {
     --tw-space-y-reverse: 0;
-    margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
-    margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
+    margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
   }
   .truncate {
     overflow: hidden;
@@ -643,11 +643,17 @@
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
   }
+  .px-5 {
+    padding-inline: calc(var(--spacing) * 5);
+  }
   .px-6 {
     padding-inline: calc(var(--spacing) * 6);
   }
   .py-0\.5 {
     padding-block: calc(var(--spacing) * 0.5);
+  }
+  .py-1\.5 {
+    padding-block: calc(var(--spacing) * 1.5);
   }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
@@ -904,8 +910,12 @@
   .file\:px-3::file-selector-button {
     padding-inline: calc(var(--spacing) * 3);
   }
-  .file\:py-1\.5::file-selector-button {
-    padding-block: calc(var(--spacing) * 1.5);
+  .file\:py-1::file-selector-button {
+    padding-block: var(--spacing);
+  }
+  .file\:text-sm::file-selector-button {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
   }
   .file\:font-medium::file-selector-button {
     --tw-font-weight: var(--font-weight-medium);
@@ -1108,30 +1118,28 @@
 }
 :root {
   color-scheme: light;
-  --float-idle: #94a3b8;
-  --float-focus: #0ea5e9;
-  --float-bg: #ffffff;
+  --float-idle: #0f172a;
+  --float-focus: #0f172a;
 }
 .dark {
   color-scheme: dark;
-  --float-idle: #64748b;
-  --float-focus: #38bdf8;
-  --float-bg: #1e293b;
+  --float-idle: #f8fafc;
+  --float-focus: #f8fafc;
 }
 .float-field {
   position: relative;
 }
 .float-field > input {
-  padding-top: 1.4rem;
-  padding-bottom: 0.45rem;
+  padding-top: 1.05rem;
+  padding-bottom: 0.3rem;
 }
 .float-field > label {
   position: absolute;
   top: 50%;
   inset-inline-start: 0.75rem;
   transform: translateY(-50%);
-  padding: 0 0.25rem;
-  font-size: 0.875rem;
+  padding: 0 0.15rem;
+  font-size: 0.8125rem;
   line-height: 1.25rem;
   color: var(--float-idle);
   background: transparent;
@@ -1140,11 +1148,11 @@
   transition: top 0.2s ease, transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
 }
 .float-field > input:focus + label, .float-field > input:not(:placeholder-shown) + label {
-  top: 0;
-  transform: translateY(-50%);
-  font-size: 0.75rem;
+  top: 0.125rem;
+  transform: translateY(0);
+  font-size: 0.6875rem;
   color: var(--float-focus);
-  background: var(--float-bg);
+  background: transparent;
 }
 @property --tw-translate-x {
   syntax: "*";
