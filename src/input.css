@@ -54,7 +54,47 @@
 
 :root {
   color-scheme: light;
+  --float-idle: #94a3b8;
+  --float-focus: #0ea5e9;
+  --float-bg: #ffffff;
 }
 .dark {
   color-scheme: dark;
+  --float-idle: #64748b;
+  --float-focus: #38bdf8;
+  --float-bg: #1e293b;
+}
+
+.float-field {
+  position: relative;
+}
+.float-field > input {
+  padding-top: 1.4rem;
+  padding-bottom: 0.45rem;
+}
+.float-field > label {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 0.75rem;
+  transform: translateY(-50%);
+  padding: 0 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--float-idle);
+  background: transparent;
+  pointer-events: none;
+  white-space: nowrap;
+  transition:
+    top 0.2s ease,
+    transform 0.2s ease,
+    font-size 0.2s ease,
+    color 0.2s ease;
+}
+.float-field > input:focus + label,
+.float-field > input:not(:placeholder-shown) + label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: var(--float-focus);
+  background: var(--float-bg);
 }
