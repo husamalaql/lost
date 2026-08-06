@@ -1,0 +1,9 @@
+{
+  "name": "lost-found-app",
+  "version": "1.0.0",
+  "description": "نظام المفقودات والموجودات - MVVM + Tailwind CSS",
+  "scripts": {
+    "build": ".\\tailwindcss.exe -i ./src/input.css -o ./css/styles.css",
+    "watch": ".\\tailwindcss.exe -i ./src/input.css -o ./css/styles.css --watch"
+  }
+}
