@@ -16,7 +16,7 @@
     card: function (item, section) {
       var isLost = section === "lost";
       var img = item.image
-        ? '<img src="' + item.image + '" alt="' + Utils.esc(item.name) + '" class="h-28 w-full object-contain bg-slate-100" />'
+        ? '<img src="' + item.image + '" alt="' + Utils.esc(item.name) + '" class="h-28 w-full object-contain bg-white" />'
         : PLACEHOLDER;
       var badgeColor = isLost ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800";
       var deleteBtn = "";

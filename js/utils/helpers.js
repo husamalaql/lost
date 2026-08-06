@@ -44,7 +44,10 @@
             var canvas = document.createElement("canvas");
             canvas.width = w;
             canvas.height = h;
-            canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(img, 0, 0, w, h);
             for (var j = 0; j < qualities.length && !result; j++) {
               var dataUrl = canvas.toDataURL("image/jpeg", qualities[j]);
               if (dataUrl.length <= maxLen) result = dataUrl;

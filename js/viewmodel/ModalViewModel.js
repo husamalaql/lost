@@ -71,6 +71,15 @@
       this.saving = true;
       this.setSaving(true);
       var vm = this;
+      var startedAt = Date.now();
+      var finish = function (fn) {
+        var remain = Math.max(0, 500 - (Date.now() - startedAt));
+        setTimeout(function () {
+          vm.saving = false;
+          vm.setSaving(false);
+          if (typeof fn === "function") fn();
+        }, remain);
+      };
       var now = new Date();
       var pad = function (n) {
         return String(n).padStart(2, "0");
@@ -107,13 +116,12 @@
       Utils.compressImage(this.imageInput.files[0], function (dataUrl) {
         base.image = dataUrl;
         vm.store.add(vm.section, base).then(function () {
-          vm.saving = false;
-          vm.setSaving(false);
-          vm.close();
-          if (typeof vm.onSaved === "function") vm.onSaved();
+          finish(function () {
+            vm.close();
+            if (typeof vm.onSaved === "function") vm.onSaved();
+          });
         }).catch(function () {
-          vm.saving = false;
-          vm.setSaving(false);
+          finish();
         });
       });
     }
