@@ -72,9 +72,22 @@
         })
         .join("");
 
-      var message =
-        "مرحباً، أنا مهتم بعنصر «" + item.name + "» (" + (item.type || "-") +
-        ") المُعلن عنه في نظام المفقودات والموجودات. هل ما زال متاحاً؟";
+      var message;
+      if (isLost) {
+        message =
+          "مرحباً، تحية طيبة،\n" +
+          "نفيدكم بأنه تم العثور على العنصر المفقود «" + item.name +
+          "» (" + (item.type || "-") + ") المُسجَّل في نظام المفقودات والموجودات.\n" +
+          "يُرجى التواصل معنا لاستلامه في أقرب وقت.\n" +
+          "مع جزيل الشكر والتقدير.";
+      } else {
+        message =
+          "مرحباً، تحية طيبة،\n" +
+          "أعتقد أن العنصر «" + item.name +
+          "» (" + (item.type || "-") + ") المُعلَن عنه في نظام المفقودات والموجودات يخصني.\n" +
+          "أرجو التواصل معي لاستلامه.\n" +
+          "مع جزيل الشكر والتقدير.";
+      }
       document.getElementById("detail-whatsapp").setAttribute("href", Utils.waLink(item.contact, message));
 
       this.modal.classList.remove("hidden");
