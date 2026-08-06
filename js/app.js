@@ -2,6 +2,9 @@
   "use strict";
 
   document.addEventListener("DOMContentLoaded", function () {
+    I18n.init();
+    UI.init();
+
     var store = new Store();
     var bootEl = document.getElementById("app-loading");
     var errEl = document.getElementById("app-error");
@@ -25,6 +28,13 @@
       modalVM.onSaved = function () {
         lostVM.render();
         foundVM.render();
+      };
+
+      I18n.onChange = function () {
+        lostVM.render();
+        foundVM.render();
+        if (modalVM.isOpen) modalVM.refresh();
+        if (detailVM.isOpen) detailVM.refresh();
       };
 
       detailVM.onDelete = function (item, section) {
@@ -51,7 +61,7 @@
             e.stopPropagation();
             var dId = Number(delBtn.getAttribute("data-id"));
             var dItem = findItem(section, dId);
-            if (dItem && window.confirm("هل تريد حذف هذا العنصر؟")) {
+            if (dItem && window.confirm(I18n.t("confirmDelete"))) {
               store.remove(section, dId).catch(function () {});
               refresh();
             }

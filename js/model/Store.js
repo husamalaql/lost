@@ -16,7 +16,7 @@
 
     _fail(e, message) {
       if (typeof this.onError === "function") {
-        this.onError(message || "تعذر الاتصال بالخادم", e);
+        this.onError(message || I18n.t("errServer"), e);
       }
     }
 
@@ -43,7 +43,7 @@
         }
       } catch (e) {
         this.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
-        this._fail(e, "تعذر تحميل البيانات من الخادم. اعرض البيانات المحلية مؤقتاً.");
+        this._fail(e, I18n.t("errLoad"));
       }
       return this.data;
     }
@@ -89,7 +89,7 @@
         this.data[section] = this.data[section].filter(function (x) {
           return x !== item;
         });
-        this._fail(e, "تعذر حفظ العنصر في الخادم: " + e.message);
+        this._fail(e, I18n.t("errSave") + ": " + e.message);
         throw e;
       }
       return item;
@@ -120,7 +120,7 @@
         }
       } catch (e) {
         list.splice(idx, 0, removed);
-        this._fail(e, "تعذر حذف العنصر من الخادم: " + e.message);
+        this._fail(e, I18n.t("errDelete") + ": " + e.message);
         throw e;
       }
     }

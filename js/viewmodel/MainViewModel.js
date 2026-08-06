@@ -30,7 +30,11 @@
       document.querySelectorAll(".screen").forEach(function (s) {
         s.classList.add("hidden");
       });
-      document.getElementById(id).classList.remove("hidden");
+      var el = document.getElementById(id);
+      el.classList.remove("hidden");
+      el.classList.remove("animate-screen-in");
+      void el.offsetWidth;
+      el.classList.add("animate-screen-in");
       window.scrollTo(0, 0);
     }
   }

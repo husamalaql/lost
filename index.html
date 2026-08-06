@@ -7,17 +7,25 @@
   <title>نظام المفقودات والموجودات</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen">
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-200 min-h-screen">
+
+  <!-- ====== شريط أدوات: الثيم واللغة ====== -->
+  <div class="fixed top-4 end-4 z-[55] flex items-center gap-2">
+    <button id="btn-theme" aria-label="Dark mode"
+      class="w-11 h-11 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-slate-900/10 flex items-center justify-center text-slate-700 dark:text-amber-300 transition-transform duration-200 hover:scale-110 active:scale-90"></button>
+    <button id="btn-lang"
+      class="h-11 px-3.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-slate-900/10 flex items-center justify-center text-sm font-bold text-sky-600 dark:text-sky-400 transition-transform duration-200 hover:scale-110 active:scale-90">EN</button>
+  </div>
 
   <!-- ====== شريط الخطأ ====== -->
   <div id="app-error"
-    class="hidden fixed top-4 inset-x-0 z-[60] mx-auto w-fit max-w-[90%] bg-red-500 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg text-center"></div>
+    class="hidden fixed top-4 inset-x-0 z-[60] mx-auto w-fit max-w-[90%] bg-red-500 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg text-center animate-screen-in"></div>
 
   <!-- ====== شاشة التحميل ====== -->
-  <div id="app-loading" class="fixed inset-0 z-[70] bg-slate-100 flex items-center justify-center">
+  <div id="app-loading" class="fixed inset-0 z-[70] bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
     <div class="text-center">
       <div class="w-10 h-10 border-4 border-slate-300 border-t-sky-500 rounded-full animate-spin mx-auto mb-3"></div>
-      <p class="text-slate-500">جارِ تحميل البيانات...</p>
+      <p class="text-slate-500 dark:text-slate-400" data-i18n="loading">جارِ تحميل البيانات...</p>
     </div>
   </div>
 
@@ -25,27 +33,39 @@
   <section id="screen-main" class="screen min-h-screen">
     <div class="max-w-3xl mx-auto px-4 py-12">
       <header class="text-center mb-10">
-        <h1 class="text-4xl font-bold text-slate-900 mb-2">نظام المفقودات والموجودات</h1>
-        <p class="text-slate-500">أدخل نوع البطاقة ثم تصفح العناصر المفقودة أو الموجودة</p>
+        <div
+          class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-500 shadow-lg shadow-sky-500/30 flex items-center justify-center text-white animate-float">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </div>
+        <h1 class="text-4xl font-bold text-slate-900 dark:text-white mb-2" data-i18n="appName">نظام المفقودات والموجودات</h1>
+        <p class="text-slate-500 dark:text-slate-400" data-i18n="tagline">اختر بطاقة لتصفح العناصر المفقودة أو الموجودة</p>
       </header>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
         <button id="btn-goto-lost"
-          class="bg-amber-500 hover:bg-amber-600 text-white text-2xl font-bold py-12 rounded-2xl shadow-lg transition">
-          المفقودات
+          class="group relative overflow-hidden bg-amber-500 hover:bg-amber-600 text-white text-2xl font-bold py-12 rounded-2xl shadow-lg shadow-amber-500/25 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 flex flex-col items-center justify-center gap-3">
+          <span class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none"></span>
+          <svg class="w-12 h-12 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+          <span data-i18n="lostItems">المفقودات</span>
         </button>
         <button id="btn-goto-found"
-          class="bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-bold py-12 rounded-2xl shadow-lg transition">
-          الموجودات
+          class="group relative overflow-hidden bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-bold py-12 rounded-2xl shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-95 flex flex-col items-center justify-center gap-3">
+          <span class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none"></span>
+          <svg class="w-12 h-12 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+          </svg>
+          <span data-i18n="foundItems">الموجودات</span>
         </button>
       </div>
 
-      <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-xl font-bold text-slate-900 mb-3">عن البرنامج</h2>
-        <p class="text-slate-600 leading-relaxed">
-          برنامج بسيط لمساعدة الناس على إيجاد أغراضهم المفقودة والموجودة.
-          يمكنك تصفح العناصر المفقودة والموجودة، فلترة النتائج حسب النوع،
-          وإضافة عناصر جديدة عند العثور عليها.
+      <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-slate-900/5 p-6">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3" data-i18n="aboutTitle">عن البرنامج</h2>
+        <p class="text-slate-600 dark:text-slate-300 leading-relaxed" data-i18n="aboutText">
+          برنامج بسيط يساعد الناس على استرجاع أغراضهم المفقودة والموجودة. تصفح العناصر، فلتر النتائج حسب النوع، وأضف عناصر جديدة عند العثور عليها.
         </p>
       </div>
     </div>
@@ -55,23 +75,29 @@
   <section id="screen-lost" class="screen hidden min-h-screen">
     <div class="max-w-5xl mx-auto px-4 py-8">
       <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <button data-back class="bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded-lg font-medium transition">
-          → رجوع
+        <button data-back
+          class="group inline-flex items-center gap-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 dark:text-slate-100 px-4 py-2 rounded-lg font-medium transition-all duration-200 active:scale-95">
+          <span class="inline-block transition-transform duration-300 rtl:rotate-180 group-hover:-translate-x-1">→</span>
+          <span data-i18n="back">رجوع</span>
         </button>
-        <h1 class="text-3xl font-bold text-slate-900">المفقودات</h1>
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white" data-i18n="lostItems">المفقودات</h1>
         <div class="flex items-center gap-3">
-          <select id="lost-filter" class="bg-white border border-slate-300 rounded-lg px-4 py-2">
-            <option value="all">كل الأنواع</option>
+          <select id="lost-filter"
+            class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 text-slate-800 dark:text-slate-200 dark:[color-scheme:dark]">
+            <option value="all" data-i18n="allTypes">كل الأنواع</option>
           </select>
           <button id="btn-add-lost"
-            class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg font-medium transition">
-            + إضافة مفقود
+            class="group inline-flex items-center gap-1.5 bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg font-medium shadow-lg shadow-rose-500/25 transition-all duration-200 hover:scale-105 active:scale-95">
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            <span data-i18n="addLost">إضافة مفقود</span>
           </button>
         </div>
       </div>
 
       <div id="lost-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
-      <p id="lost-empty" class="hidden text-center text-slate-500 text-lg py-16">لا توجد عناصر مطابقة</p>
+      <p id="lost-empty" class="hidden text-center text-slate-500 dark:text-slate-400 text-lg py-16" data-i18n="emptyList">لا توجد عناصر مطابقة</p>
     </div>
   </section>
 
@@ -79,91 +105,107 @@
   <section id="screen-found" class="screen hidden min-h-screen">
     <div class="max-w-5xl mx-auto px-4 py-8">
       <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <button data-back class="bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded-lg font-medium transition">
-          → رجوع
+        <button data-back
+          class="group inline-flex items-center gap-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 dark:text-slate-100 px-4 py-2 rounded-lg font-medium transition-all duration-200 active:scale-95">
+          <span class="inline-block transition-transform duration-300 rtl:rotate-180 group-hover:-translate-x-1">→</span>
+          <span data-i18n="back">رجوع</span>
         </button>
-        <h1 class="text-3xl font-bold text-slate-900">الموجودات</h1>
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white" data-i18n="foundItems">الموجودات</h1>
         <div class="flex items-center gap-3">
-          <select id="found-filter" class="bg-white border border-slate-300 rounded-lg px-4 py-2">
-            <option value="all">كل الأنواع</option>
+          <select id="found-filter"
+            class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 text-slate-800 dark:text-slate-200 dark:[color-scheme:dark]">
+            <option value="all" data-i18n="allTypes">كل الأنواع</option>
           </select>
           <button id="btn-add-found"
-            class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition">
-            + إضافة موجود
+            class="group inline-flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium shadow-lg shadow-emerald-500/25 transition-all duration-200 hover:scale-105 active:scale-95">
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            <span data-i18n="addFound">إضافة موجود</span>
           </button>
         </div>
       </div>
 
       <div id="found-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
-      <p id="found-empty" class="hidden text-center text-slate-500 text-lg py-16">لا توجد عناصر مطابقة</p>
+      <p id="found-empty" class="hidden text-center text-slate-500 dark:text-slate-400 text-lg py-16" data-i18n="emptyList">لا توجد عناصر مطابقة</p>
     </div>
   </section>
 
   <!-- ====== النافذة المنبثقة: إضافة عنصر ====== -->
-  <div id="modal-add" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md">
-      <header class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-        <h2 id="modal-title" class="text-xl font-bold text-slate-900">إضافة عنصر</h2>
-        <button id="modal-close" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">×</button>
+  <div id="modal-add" class="hidden fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md animate-modal-in">
+      <header class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <h2 id="modal-title" class="text-xl font-bold text-slate-900 dark:text-white">إضافة عنصر</h2>
+        <button id="modal-close"
+          class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-2xl leading-none transition-colors">×</button>
       </header>
 
       <form id="modal-form" class="px-6 py-5 space-y-4">
         <div>
           <label id="label-name" class="block text-sm font-medium mb-1">اسم العنصر</label>
-          <input id="field-name" type="text" required placeholder="مثال: حقيبة ظهر"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <input id="field-name" type="text" required data-i18n-placeholder="placeholderName" placeholder="مثال: حقيبة ظهر"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">النوع</label>
-          <input id="field-type" type="text" required placeholder="مثال: حقائب"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <label data-i18n="labelType" class="block text-sm font-medium mb-1">النوع</label>
+          <input id="field-type" type="text" required data-i18n-placeholder="placeholderType" placeholder="مثال: حقائب"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">رقم الهاتف</label>
-          <input id="field-phone" type="tel" required placeholder="05xxxxxxxx"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <label data-i18n="labelPhone" class="block text-sm font-medium mb-1">رقم الهاتف</label>
+          <input id="field-phone" type="tel" required data-i18n-placeholder="placeholderPhone" placeholder="05xxxxxxxx"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400" />
         </div>
         <div>
           <label id="label-person" class="block text-sm font-medium mb-1">اسم الشخص</label>
-          <input id="field-person" type="text" required placeholder="اسم الشخص المعني"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <input id="field-person" type="text" required data-i18n-placeholder="placeholderPerson" placeholder="اسم الشخص المعني"
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">صورة العنصر</label>
+          <label data-i18n="labelImage" class="block text-sm font-medium mb-1">صورة العنصر</label>
           <input id="field-image" type="file" accept="image/*"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:rounded-lg file:border-0 file:bg-sky-500 file:text-white file:px-3 file:py-1.5 file:font-medium file:hover:bg-sky-600" />
         </div>
 
         <div class="flex gap-3 pt-2">
           <button type="button" id="modal-cancel"
-            class="flex-1 bg-slate-200 hover:bg-slate-300 py-2 rounded-lg font-medium transition">إلغاء</button>
+            class="flex-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 dark:text-slate-100 py-2 rounded-lg font-medium transition-all duration-200 active:scale-95" data-i18n="cancel">إلغاء</button>
           <button type="submit" id="modal-submit"
-            class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-lg font-medium transition">حفظ</button>
+            class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-lg font-medium transition-all duration-200 active:scale-95">حفظ</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- ====== نافذة التفاصيل ====== -->
-  <div id="modal-detail" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+  <div id="modal-detail" class="hidden fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-modal-in">
       <div class="relative">
-        <div id="detail-image" class="h-56 bg-white flex items-center justify-center"></div>
+        <div id="detail-image" class="h-56 bg-white dark:bg-slate-700 flex items-center justify-center"></div>
         <button id="detail-close"
-          class="absolute top-2 right-2 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center text-slate-500 hover:text-slate-800 transition">×</button>
+          class="absolute top-2 end-2 w-8 h-8 bg-white dark:bg-slate-900 rounded-full shadow flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white transition">×</button>
       </div>
       <div class="px-6 py-5">
-        <h2 id="detail-name" class="text-xl font-bold text-slate-900 mb-1"></h2>
+        <h2 id="detail-name" class="text-xl font-bold text-slate-900 dark:text-white mb-1"></h2>
         <span id="detail-type" class="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 mb-3"></span>
-        <div id="detail-fields" class="text-sm space-y-1.5 text-slate-700"></div>
+        <div id="detail-fields" class="text-sm space-y-1.5 text-slate-700 dark:text-slate-300"></div>
 
         <div class="flex gap-3 pt-5">
-          <button id="detail-delete" class="hidden bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition">حذف</button>
+          <button id="detail-delete"
+            class="hidden items-center justify-center gap-1.5 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition-all duration-200 active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            </svg>
+            <span data-i18n="delete">حذف</span>
+          </button>
           <button id="detail-cancel"
-            class="flex-1 bg-slate-200 hover:bg-slate-300 py-2 rounded-lg font-medium transition">إلغاء</button>
+            class="flex-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 dark:text-slate-100 py-2 rounded-lg font-medium transition-all duration-200 active:scale-95" data-i18n="cancel">إلغاء</button>
           <a id="detail-whatsapp" target="_blank" rel="noopener"
-            class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-lg font-medium transition text-center">
-            طلب عبر واتساب
+            class="flex-1 inline-flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-lg font-medium transition-all duration-200 active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+            </svg>
+            <span data-i18n="whatsapp">طلب عبر واتساب</span>
           </a>
         </div>
       </div>
@@ -172,6 +214,8 @@
 
   <!-- سكربتات MVVM -->
   <script src="js/utils/helpers.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/ui.js"></script>
   <script src="js/model/Store.js"></script>
   <script src="js/view/Views.js"></script>
   <script src="js/viewmodel/MainViewModel.js"></script>

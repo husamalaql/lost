@@ -6,6 +6,7 @@
       this.store = store;
       this.section = "found";
       this.saving = false;
+      this.isOpen = false;
       this.modal = document.getElementById("modal-add");
       this.form = document.getElementById("modal-form");
       this.imageInput = document.getElementById("field-image");
@@ -42,28 +43,39 @@
         this.submitBtn.innerHTML =
           '<span class="inline-flex items-center justify-center gap-2">' +
           '<span class="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin"></span>' +
-          "جارِ الحفظ...</span>";
+          I18n.t("saving") +
+          "</span>";
       } else {
         this.submitBtn.classList.remove("opacity-60", "cursor-not-allowed");
-        this.submitBtn.textContent = "حفظ";
+        this.submitBtn.textContent = I18n.t("save");
       }
+    }
+
+    setLabels() {
+      var isLost = this.section === "lost";
+      document.getElementById("modal-title").textContent = I18n.t("addTitle");
+      document.getElementById("label-name").textContent = I18n.t(isLost ? "labelNameLost" : "labelNameFound");
+      document.getElementById("label-person").textContent = I18n.t(isLost ? "labelPersonLost" : "labelPersonFound");
     }
 
     open(section) {
       this.section = section;
+      this.isOpen = true;
       this.saving = false;
       this.setSaving(false);
-      var isLost = section === "lost";
-      document.getElementById("modal-title").textContent = isLost ? "إضافة عنصر مفقود" : "إضافة عنصر موجود";
-      document.getElementById("label-name").textContent = isLost ? "اسم المفقود" : "اسم الموجود";
-      document.getElementById("label-person").textContent = isLost ? "اسم صاحب المفقود" : "اسم المتحصل";
+      this.setLabels();
       this.form.reset();
       this.modal.classList.remove("hidden");
       document.getElementById("field-name").focus();
     }
 
+    refresh() {
+      if (this.isOpen) this.setLabels();
+    }
+
     close() {
       this.modal.classList.add("hidden");
+      this.isOpen = false;
     }
 
     save() {
