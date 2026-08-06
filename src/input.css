@@ -56,11 +56,13 @@
   color-scheme: light;
   --float-idle: #0f172a;
   --float-focus: #0f172a;
+  --float-bg: #ffffff;
 }
 .dark {
   color-scheme: dark;
   --float-idle: #f8fafc;
   --float-focus: #f8fafc;
+  --float-bg: #1e293b;
 }
 
 .float-field {
@@ -94,5 +96,5 @@
   transform: translateY(-50%);
   font-size: 0.6875rem;
   color: var(--float-focus);
-  background: transparent;
+  background: var(--float-bg);
 }
