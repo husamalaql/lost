@@ -11,6 +11,7 @@
       this.form = document.getElementById("modal-form");
       this.imageInput = document.getElementById("field-image");
       this.submitBtn = document.getElementById("modal-submit");
+      this.placeInput = document.getElementById("field-place");
       this.onSaved = null;
 
       var vm = this;
@@ -55,6 +56,7 @@
       var isLost = this.section === "lost";
       document.getElementById("modal-title").textContent = I18n.t("addTitle");
       document.getElementById("label-name").textContent = I18n.t(isLost ? "labelNameLost" : "labelNameFound");
+      document.getElementById("label-place").textContent = I18n.t(isLost ? "labelPlaceLost" : "labelPlaceFound");
       document.getElementById("label-person").textContent = I18n.t(isLost ? "labelPersonLost" : "labelPersonFound");
     }
 
@@ -70,7 +72,10 @@
     }
 
     refresh() {
-      if (this.isOpen) this.setLabels();
+      if (this.isOpen) {
+        this.setLabels();
+        this.setSaving(false);
+      }
     }
 
     close() {
@@ -115,14 +120,15 @@
       };
 
       var isLost = this.section === "lost";
+      var place = this.placeInput ? this.placeInput.value.trim() : "";
       if (isLost) {
         base.ownerName = document.getElementById("field-person").value.trim();
         base.lostTime = time;
-        base.lostPlace = "غير محدد";
+        base.lostPlace = place || "غير محدد";
       } else {
         base.finderName = document.getElementById("field-person").value.trim();
         base.foundTime = time;
-        base.foundPlace = "غير محدد";
+        base.foundPlace = place || "غير محدد";
       }
 
       Utils.compressImage(this.imageInput.files[0], function (dataUrl) {
